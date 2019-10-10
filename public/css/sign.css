@@ -1,0 +1,29 @@
+.row .col-8 {
+  min-width: 360px;
+}
+
+.sign-icon {
+  font-size: 3.5rem;
+  color: #fff;
+  background-color: #343a40;
+  border-radius: 50%;
+  padding: 1rem;
+  transform: scaleX(0.9);
+}
+
+.fb-icon {
+  font-size: 2rem;
+  color: white;
+  position: absolute;
+  top: calc(50% - 1rem);
+  left: 0.5rem;
+}
+
+#fb-btn {
+  background-color: #385185;
+  border-color: #385185;
+}
+
+#fb-btn:hover {
+  background-color: #263a66;
+}

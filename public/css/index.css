@@ -1,0 +1,15 @@
+/* record 奇數列背景色 */
+.record-ls.odd .record {
+  background-color: #f0f2f4;
+}
+
+.kind-icon {
+  font-size: 2rem;
+  color: #65d1e2;
+}
+
+@media screen and (max-width: 992px) {
+  .record-ls .record {
+    background-color: #f0f2f4;
+  }
+}
