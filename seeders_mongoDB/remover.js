@@ -4,8 +4,8 @@
 // =========================
 
 const mongoose = require('mongoose')
-const Record = require('../record.js')
-const User = require('../user.js')
+const Record = require('../models/record.js')
+const User = require('../models/user.js')
 
 
 // database 資料歸零

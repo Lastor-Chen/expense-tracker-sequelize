@@ -5,9 +5,9 @@
 
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
-const Record = require('../record.js')
+const Record = require('../models/record.js')
 const records = require('./records.json')
-const User = require('../user.js')
+const User = require('../models/user.js')
 const users = require('./users.json')
 
 
