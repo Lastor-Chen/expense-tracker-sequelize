@@ -45,7 +45,7 @@ require('./config/passport.js')(passport)
 const hbs = exphbs.create({ 
   extname: 'hbs', 
   defaultLayout: 'main', 
-  helpers: { ifEqual: require('./models/lib/helpers.js') } 
+  helpers: { ifEqual: require('./lib/helpers.js') } 
 })
 
 app.engine('hbs', hbs.engine)

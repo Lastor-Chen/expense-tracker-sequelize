@@ -10,7 +10,7 @@ const User = require('../models/user.js')
 const bcrypt = require('bcryptjs')
 
 // custom module
-const { checkSignUp, checkProfile, checkPassword } = require('../models/lib/lib.js')
+const { checkSignUp, checkProfile, checkPassword } = require('../lib/lib.js')
 const isAuthed = require('../config/auth.js')
 
 // routes '/users'

@@ -8,8 +8,8 @@ const router = express.Router()
 const Recode = require('../models/record.js')
 
 // custom module
-const { getCategoryIcon, getSelectList } = require('../models/category.js')
-const { getMonthList } = require('../models/lib/lib.js')
+const { getCategoryIcon, getSelectList } = require('../lib/category.js')
+const { getMonthList } = require('../lib/lib.js')
 
 // routes '/'
 // ==============================

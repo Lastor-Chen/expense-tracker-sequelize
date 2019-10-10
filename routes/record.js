@@ -8,8 +8,8 @@ const router = express.Router()
 const Record = require('../models/record.js')
 
 // custom module
-const { getSelectList } = require('../models/category.js')
-const { getOwnerId, checkNewEdit } = require('../models/lib/lib.js')
+const { getSelectList } = require('../lib/category.js')
+const { getOwnerId, checkNewEdit } = require('../lib/lib.js')
 
 
 // routes '/records'
