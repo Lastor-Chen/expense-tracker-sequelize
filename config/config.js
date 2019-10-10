@@ -1,3 +1,5 @@
+if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
+
 module.exports = {
   "development": {
     "username": process.env.MYSQL_USER,
