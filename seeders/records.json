@@ -4,80 +4,92 @@
     "category": "餐飲食品",
     "amount": 60,
     "date": "2019-09-21",
-    "merchant": "麥當勞"
+    "merchant": "麥當勞",
+    "userId": 0
   },
   {
     "name": "下午茶",
     "category": "餐飲食品",
     "amount": 130,
     "date": "2019-09-21",
-    "merchant": "85度C"
+    "merchant": "85度C",
+    "userId": 0
   },
   {
     "name": "電車",
     "category": "交通出行",
     "amount": 60,
-    "date": "2019-09-20"
+    "date": "2019-09-20",
+    "userId": 0
   },
   {
     "name": "點數卡",
     "category": "休閒娛樂",
     "amount": 1000,
     "date": "2019-08-21",
-    "merchant": "App Store"
+    "merchant": "App Store",
+    "userId": 0
   },
   {
     "name": "同學會",
     "category": "其他",
     "amount": 650,
-    "date": "2019-08-21"
+    "date": "2019-08-21",
+    "userId": 0
   },
   {
     "name": "店熱水壺",
     "category": "家居物業",
     "amount": 800,
-    "date": "2019-08-15"
+    "date": "2019-08-15",
+    "userId": 0
   },
   {
     "name": "首飾",
     "category": "其他",
     "amount": 1000,
     "date": "2019-09-17",
-    "merchant": "烏鴉小姐"
+    "merchant": "烏鴉小姐",
+    "userId": 1
   },
   {
     "name": "吸塵器",
     "category": "家居物業",
     "amount": 2600,
     "date": "2019-09-17",
-    "merchant": "萬應屋"
+    "merchant": "萬應屋",
+    "userId": 1
   },
   {
     "name": "流星錘吊飾",
     "category": "其他",
     "amount": 300,
     "date": "2019-09-20",
-    "merchant": "萬應屋"
+    "merchant": "萬應屋",
+    "userId": 1
   },
   {
     "name": "大砲",
     "category": "交通出行",
     "amount": 1350,
     "date": "2019-07-17",
-    "merchant": "大砲屋"
+    "merchant": "大砲屋",
+    "userId": 1
   },
   {
     "name": "炭烤炎龍",
     "category": "餐飲食品",
     "amount": 3800,
     "date": "2019-07-15",
-    "merchant": "地下城美食"
+    "merchant": "地下城美食",
+    "userId": 1
   },
   {
     "name": "史萊姆浴",
     "category": "休閒娛樂",
     "amount": 300,
     "date": "2019-07-17",
-    "merchant": "奇幻浴場"
+    "merchant": "奇幻浴場",
+    "userId": 1
   }
 ]
