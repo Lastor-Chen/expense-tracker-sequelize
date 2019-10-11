@@ -5,9 +5,11 @@
 
 const LocalStrategy = require('passport-local').Strategy
 const FacebookStrategy = require('passport-facebook').Strategy
-const User = require('../models/user.js')
 const bcrypt = require('bcryptjs')
 
+// sequelize model
+const db = require('../models')
+const User = db.User
 
 // Local Strategy
 // ==============================
@@ -16,22 +18,19 @@ const localOption = {
   usernameField: 'email'
 }
 
-function localCallback(email, password, done) {
-  User.findOne({ email }, (err, user) => {
-    if (err) return console.error(err)
+async function localCallback(email, password, done) {
+  // 檢查 email 帳號
+  let user = {}
+  try { user = await User.findOne({ where: { email } }) }
+  catch (err) { console.error(err) }
 
-    // 檢查 email 帳號
-    if (!user) return done(null, false, { message: '查無此帳號，請重新輸入' })
+  if (!user) return done(null, false, { message: 'Email 或 Password 不符' })
 
-    // 檢查加鹽後的密碼
-    bcrypt.compare(password, user.password, (err, success) => {
-      if (err) return console.error(err)
+  // 檢查加鹽後的密碼
+  const success = bcrypt.compareSync(password, user.password)
+  if (!success) return done(null, false, { message: 'Email 或 Password 不符' })
 
-      if (!success) return done(null, false, { message: '密碼不符，請重新輸入' })
-
-      done(null, user)
-    })
-  })
+  done(null, user)
 }
 
 
@@ -45,33 +44,34 @@ const fbOption = {
   profileFields: ['email', 'displayName']
 }
 
-function fbCallback(accessToken, refreshToken, profile, cb) {
-  User.findOne({ email: profile._json.email }, (err, user) => {
-    if (err) return console.error(err)
+async function fbCallback(accessToken, refreshToken, profile, cb) {
+  // 確認 Email 是否已註冊
+  let user = {}
+  try { user = await User.findOne({ where: { email: profile._json.email } }) }
+  catch (err) { console.error(err) }
+  
+  if (user) return cb(null, user)
 
-    // 如帳戶已存在，回傳 user
-    if (user) return cb(err, user)
+  // 註冊新帳戶
+  const newUser = { ...profile._json }
+  delete newUser.id
 
-    // 如帳戶未存在，註冊新帳戶
-    const userInfo = { ...profile._json }
-    delete userInfo.id
+  // 亂數給予一組密碼，並加鹽
+  newUser.password = Math.random().toString(36).slice(-8)
 
-    // 亂數給予一組密碼，並加鹽
-    userInfo.password = Math.random().toString(36).slice(-8)
-    bcrypt.hash(userInfo.password, 10, (err, hash) => {
-      if (err) return console.error(err)
+  const hash = bcrypt.hashSync(newUser.password, 10)
+  newUser.password = hash
 
-      userInfo.password = hash
-      User.create(userInfo, (err, user) => cb(err, user))
-    })
-  });
+  User.create(newUser)
+    .then(user => cb(null, user) )
+    .catch(err => console.error(err) )
 }
 
 
 // Strategy 主函式
 // ==============================
 
-function strategy(passport) {
+module.exports = passport =>  {
   // 設定 Strategy
   passport.use(new LocalStrategy(localOption, localCallback))
   passport.use(new FacebookStrategy(fbOption, fbCallback))
@@ -81,14 +81,7 @@ function strategy(passport) {
 
   // 反序列化 session
   passport.deserializeUser((id, done) => {
-    User.findById(id, function (err, user) {
-      done(err, user)
-    })
+    User.findByPk(id)
+      .then(user => done(null, user))
   })
 }
-
-
-// Export
-// ============================
-
-module.exports = strategy
