@@ -1,73 +1,72 @@
-# Expense Tracker 簡單記帳簿
+# Expense Tracker with Sequelize
 A expense tracker app. <br>
 This is a student project that built on Node.js with Express framework. <br>
-Database used mongoDB.
+Database used MySQL.
 
 簡易的記帳 App。 <br>
-這是一個用 Node.js 架設網站的練習專案。
-
-目前使用 branch 保存不同版本，數字越大者越新。
-
-| 單元 | branch   |
-| ----| -------- |
-| A16 | master   |
-| A17 | ac_a17   |
-
-#### 練習目標
-* 沿用至今前後端所學，打造一個 Web App
-* Node.js + Express 建立 App
-* 透過 mongoose 操作 mongoDB 資料庫
-* 實作使用者認證系統
-* 透過 PaaS 雲端服務佈署 App
+Alpha Camp 學期三期末考 A29-Q3。 <br>
+將 mongoose + mongoDB 專案改寫為 sequelize + MySQL。
 
 ## Preview Pages
 <img src="./public/img/preview01.jpg" alt="preview" width="500px" target="_blank">
 <img src="./public/img/preview02.jpg" alt="preview" width="500px" target="_blank">
 
 #### 功能
-A16
 * 使用者認證系統，可註冊/登入/登出
 * 可透過 Facebook 進行登入 (localhost限定)
-* 可以建立/編輯/刪除支出紀錄
-* 於首頁能瀏覽所有支出紀錄
+* 可編輯 User profile
+* 可以 Create/Update/Delete 支出紀錄
+* 於首頁能 Read 所有支出紀錄
 * 可依分類篩選不同支出紀錄
+* 可依月分篩選不同支出紀錄
 * 依頁面上的所有支出紀錄，自動計算總金額
+* 圓餅圖分析支出數據
 * RWD 自適應
-* 前後端皆檢查 user input
-
-A17
-* 新增店家欄位
-* 新增依月份篩選功能
-* 新增編輯 User setting 功能
-* 新增圓餅圖分析數據功能
 
 ## Usage
-* 可前往 [Heroku](https://lastor-expense-tracker-a17.herokuapp.com) 瀏覽佈署版本。 (無法使用 Facebook 登入)
-* 或在本機端執行 (需下載，並安裝依賴套件)
-
 安裝方法，請參考下方 [Dependency packages](#Dependency-packages) 與 [Installation](#Installation) 項目。 <br>
 安裝完成後，使用以下步驟於本機端啟動專案。
 
-1. 於 mongoDB 安裝目錄，啟動 mongoDB。 
+1. 安裝 dependency npm pakages
+    * 安裝專案套件，排除 nodemon
+    ```
+    $ npm install --only=prod
+    ```
+    * 一併安裝 nodemon 於專案中
+    ```
+    $ npm install
+    ```
+1. 於 cmd 啟動 MySQL。 
+    * macOS
+    ```
+    1. 開啟「系統偏好設定介面」並點擊 MySQL 圖標
+    2. 點擊 GUI 中的 Start MySQL Server
+    ```
     
-    * macOS [官方文件](https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-os-x/#run-mongodb)
+    * windows(需用系統管理員執行)
     ```
-    $ ~/mongodb/bin> mongod --dbpath <path to data directory>
+    $ net start mysql80
     ```
     
-    * windows(需用系統管理員執行) [官方文件](https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-windows/#start-mdb-edition-as-a-windows-service)
+1. 使用 MySQL Workbench 工具，新建 database
     ```
-    $ net start mongodb
+    # SQL code
+    CREATE DATABASE `your_database_name`;
+    ```
+    
+1. 在 cmd 進入專案目錄，執行 migration 設定 database
+    ```
+    $ npx sequelize db:migrate
     ```
 
-1. 回到專案目錄，執行 seeder，用於 mongoDB 建立基本資料 (非必須)
+1. 執行 seeder，用於 MySQL 建立基本資料 (非必須)
     ```
     $ npm run seeder
     ```
 
     * 執行 seed 後可使用假帳戶進行快速測試
     ```
-    // file path: /models/seeds/users.json
+    // file path: /seeders/users.json
     
     email: "user1@example.com",
     password: "12345678"
@@ -81,12 +80,18 @@ A17
     $ npm run remover
     ```
 
-
-1. 於專案根目錄中新建 .env 檔案，設置環境變數。(Facebook 開發者 App 資訊)
+1. 於專案根目錄中新建 .env 檔案，設置環境變數。
     ```
+    // Facebook developer App 帳戶資料
     FACEBOOK_ID = ***
     FACEBOOK_SECRET = ***
     FACEBOOK_CALLBACK = http://localhost:3000/auth/facebook/callback
+    
+    // MySQL Server 帳戶資料
+    MYSQL_USER = *** (your_user_name)
+	MYSQL_KEY = *** (your_password)
+	MYSQL_DATABASE = *** (your_database_name)
+	MYSQL_HOST = 127.0.0.1
     ```
 
 1. 啟動 Node.js Server
@@ -98,7 +103,7 @@ A17
 
     * 未安裝 nodemon，於專案根目錄執行
     ```
-    $ npm run start
+    $ npm start
     ```
 
 1. 於瀏覽器開啟網頁
@@ -111,41 +116,25 @@ A17
     回到 cmd 按下 Ctrl + C
     ```
 
-1. 關閉 mongoDB
+1. 關閉 MySQL
     * macOS
     ```
-    關閉 Terminal 即可
+    1. 開啟「系統偏好設定介面」並點擊 MySQL 圖標
+    2. 點擊 GUI 中的 Stop MySQL Server
     ```
     
     * windows(需用系統管理員執行)
     ```
-    $ net stop mongodb
+    $ net stop mysql80
     ```
 
 ## Dependency packages
 #### main
 * [Node.js](https://nodejs.org/en/) v10.16.3
-* [mongoDB](https://www.mongodb.com/) v4.0.12
+* [MySQL](https://www.mongodb.com/) v8.0.17
 
 #### npm package
-```
-"devDependencies": {
-  "nodemon": "^1.19.2",
-  "dotenv": "^8.1.0"
-},
-"dependencies": {
-  "bcryptjs": "^2.4.3",
-  "connect-flash": "^0.1.1",
-  "express": "^4.17.1",
-  "express-handlebars": "^3.1.0",
-  "express-session": "^1.16.2",
-  "method-override": "^3.0.0",
-  "mongoose": "^5.6.12",
-  "passport": "^0.4.0",
-  "passport-facebook": "^3.0.0",
-  "passport-local": "^1.0.0"
-}
-```
+[link to check package.json](./package.json)
 
 #### front-end package (imported from CDN)
 * [Bootstrap](https://getbootstrap.com/) v4.3.1
@@ -180,11 +169,9 @@ $ git clone https://github.com/Lastor-Chen/expense-tracker.git [資料夾名稱]
 $ npm install
 ```
 
-#### Download mongoDB
-本機端必須安裝 mongoDB 才能執行此專案。 <br>
-請連結到 mongoDB 官方網站[下載](https://www.mongodb.com/download-center/community)。
-
-※ 注意，Windows 用戶可能會於安裝 GUI Compass 時出問題。建議安裝時不勾選，另行安裝 [Robo 3T](https://robomongo.org/)。
+#### Download MySQL
+本機端必須安裝 MySQL 才能執行此專案。 <br>
+請連結到 MySQL 官方網站[下載](https://dev.mysql.com/downloads/mysql/)。
 
 #### 選擇安裝 nodemon
 本專案推薦使用 [nodemon](https://github.com/remy/nodemon) 來取代原生的 Node.js 啟動方法。
