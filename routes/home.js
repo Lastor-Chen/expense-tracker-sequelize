@@ -5,7 +5,10 @@
 
 const express = require('express')
 const router = express.Router()
-const Recode = require('../models/record.js')
+
+// sequelize model
+const db = require('../models')
+const Record = db.Record
 
 // custom module
 const { getCategoryIcon, getSelectList } = require('../lib/category.js')
@@ -21,40 +24,39 @@ router.get('/', (req, res) => {
   res.redirect('/index')
 })
 
-router.get('/index', (req, res) => {
+router.get('/index', async (req, res) => {
   // 被篩選的月份
   const month = +req.query.month
 
-  // db query 條件，$where 類似 JS 的 .filter
-  const query = { userId: req.user.id }
-  if (month) { query["$where"] = `this.date.getMonth() === ${month - 1}` }
+  let records = []
+  try {
+    records = await Record.findAll({
+      where: { userId: req.user.id },
+      order: [['date', 'DESC']]
+    })
+  }
+  catch (err) { res.status(422).json(err) }
 
-  // 日期 {最新順} 排列
-  Recode.find(query).sort({ date: -1 }).exec((err, records) => {
-    if (err) return console.error(err)
+  let times = 1
+  for (const record of records) {
+    record.iconName = getCategoryIcon(record)
 
-    let times = 1
-    for (const record of records) {
-      // 取得 font-awesome icon 名稱
-      record.iconName = getCategoryIcon(record)
+    // format Date { yyyy-mm-dd }
+    record.showDate = record.date.toISOString().slice(0, 10)
 
-      // format Date { yyyy-mm-dd }
-      record.showDate = record.date.toJSON().split('T')[0]
+    // 加入奇數列 flag
+    if (times % 2 === 1) { record.oddEven = 'odd' }
 
-      // 加入奇數列 flag
-      if (times % 2 === 1) { record.oddEven = 'odd' }
+    times++
+  }
 
-      times++
-    }
+  // HTML category select list 參照表
+  const select = getSelectList()
 
-    // HTML category select list 參照表
-    const select = getSelectList()
+  // 月份選單 [1..(system month)]
+  const monthList = getMonthList()
 
-    // 月份選單 [1..(system month)]
-    const monthList = getMonthList()
-
-    res.render('index', { css: 'index', js: 'index', select, records, monthList, month })
-  })  
+  res.render('index', { css: 'index', js: 'index', select, records, monthList, month })
 })
 
 
