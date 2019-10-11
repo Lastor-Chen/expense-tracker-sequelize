@@ -17,8 +17,8 @@ module.exports = {
 
     // 載入 records
     records.forEach(record => {
-      if (record.userId === 0) record.userId = userRows[0].id
-      if (record.userId === 1) record.userId = userRows[1].id
+      if (record.UserId === 0) record.UserId = userRows[0].id
+      if (record.UserId === 1) record.UserId = userRows[1].id
     })
 
     return await queryInterface.bulkInsert('records', records)
