@@ -103,17 +103,16 @@ router.put('/:id/edit', (req, res) => {
 
 // Delete
 router.delete('/:id/delete', (req, res) => {
-  Record.findOne(getOwnerId(req), (err, record) => {
-    if (err) return console.error(err)
+  Record.findOne({ where: getOwnerId(req) })
+    .then(record => {
+      // 非擁有者時，導回首頁
+      if (!record) return res.redirect('/index')
 
-    // 非擁有者時，導回首頁
-    if (!record) return res.redirect('/index')
-
-    record.remove(err => {
-      if (err) return console.error(err)
-      res.redirect('/index')
+      record.destroy()
+        .then(record => res.redirect('/index'))
+        .catch(err => res.status(422).json(err))
     })
-  })
+    .catch(err => res.status(422).json(err))
 })
 
 // export
