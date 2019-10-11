@@ -5,9 +5,7 @@
 
 // npm package
 const express = require('express')                      // framework
-const mongoose = require('mongoose')                    // mongoDB ODM
 const exphbs = require('express-handlebars')            // template engine
-
 const methodOverride = require('method-override')       // 控制 form method
 const session = require('express-session')              // session 輔助套件
 const passport = require('passport')                    // 處理 user authentication
@@ -20,10 +18,11 @@ const isAuthed = require('./config/auth.js')
 // ==============================
 
 // 開發模式，使用環境變數
+const mode = process.env.NODE_ENV || 'development'
 if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
+console.log(`Using environment "${mode}".`)
 
 const app = express()
-const MONGODB_URL = process.env.MONGODB_URI || 'mongodb://localhost/record'
 app.set('port', process.env.PORT || 3000)
 
 app.use(express.static('public'))
@@ -66,15 +65,6 @@ app.use((req, res, next) => {
 
   next()
 })
-
-// 連接資料庫 mongoDB
-mongoose.connect(MONGODB_URL,
-  { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
-)
-
-const db = mongoose.connection
-db.on('error', console.log.bind(console, 'mongoDB connection error.'))
-db.once('open', console.log.bind(console, 'mongoDB is connected.'))
 
 
 // route 設定
