@@ -52,23 +52,23 @@ router.post('/new', (req, res) => {
 router.get('/:id/edit', (req, res) => {
   const id = req.params.id
 
-  // 上一筆輸入 ( flash 回傳為陣列，需往內指 )
+  // 取得上一筆 user input
   const input = req.flash('input')[0]
 
-  Record.findOne(getOwnerId(req), (err, record) => {
-    if (err) return console.error(err)
+  Record.findOne({ where: getOwnerId(req) })
+    .then(record => {
+      // 非擁有者時，導回首頁
+      if (!record) return res.redirect('/index')
 
-    // 非擁有者時，導回首頁
-    if (!record) return res.redirect('/index')
+      // format date { yyyy-mm-dd }
+      record.showDate = record.date.toISOString().slice(0, 10)
 
-    // format date { yyyy-mm-dd }
-    record.showDate = record.date.toJSON().split('T')[0]
+      // HTML select list 參照表，依 record 標記 selected
+      const select = getSelectList(record)
 
-    // HTML select list 參照表，依 record 標記 selected
-    const select = getSelectList(record)
-    
-    res.render('newEdit', { js: 'newEdit', id, record, select, input })
-  })
+      res.render('newEdit', { js: 'newEdit', id, record, select, input })
+    })
+    .catch(err => res.status(422).json(err))
 })
 
 router.put('/:id/edit', (req, res) => {
@@ -84,22 +84,21 @@ router.put('/:id/edit', (req, res) => {
   }
 
   // 儲存至 database
-  Record.findOne(getOwnerId(req), (err, record) => {
-    if (err) return console.error(err)
+  Record.findOne({ where: getOwnerId(req) })
+    .then(record => {
+      // 非擁有者時，導回首頁
+      if (!record) return res.redirect('/index')
 
-    // 非擁有者時，導回首頁
-    if (!record) return res.redirect('/index')
+      // 將 user input 回存
+      for (const key in input) {
+        record[key] = input[key]
+      }
 
-    // 將 user input 回存
-    for (const key in input) {
-      record[key] = input[key]
-    }
-
-    record.save(err => {
-      if (err) return console.error(err)
-      res.redirect('/index')
+      record.save()
+        .then(record => res.redirect('/index'))
+        .catch(err => res.status(422).json(err))
     })
-  })
+    .catch(err => res.status(422).json(err))
 })
 
 // Delete
