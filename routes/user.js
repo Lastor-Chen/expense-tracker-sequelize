@@ -6,8 +6,11 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
-const User = require('../models/user.js')
 const bcrypt = require('bcryptjs')
+
+// sequelize model
+const db = require('../models')
+const User = db.User
 
 // custom module
 const { checkSignUp, checkProfile, checkPassword } = require('../lib/lib.js')
@@ -50,8 +53,9 @@ router.post('/signup', async (req, res, next) => {
   const hash = bcrypt.hashSync(input.password, salt);
   input.password = hash
 
-  await User.create(input)
-
+  try { await User.create(input) }
+  catch (err) { res.status(422).json(err) }
+  
   // 資料庫儲存後，直接發 session 憑證登入
   passport.authenticate('local', {
     successRedirect: '/index',
