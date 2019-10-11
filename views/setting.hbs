@@ -24,9 +24,9 @@
       </div>
       <div class="form-group">
         {{#if input.email}}
-          <input type="email" class="form-control" id="email" name="email" value="{{input.email}}" placeholder="sample@gmail.com">
+          <input type="email" class="form-control" id="email" name="email" value="{{input.email}}" placeholder="sample@gmail.com" required>
         {{else}}
-          <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" placeholder="sample@gmail.com">
+          <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" placeholder="sample@gmail.com" required>
         {{/if}}
       </div>
       <div class="form-group text-right">
