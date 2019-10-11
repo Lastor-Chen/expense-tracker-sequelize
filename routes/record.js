@@ -5,7 +5,10 @@
 
 const express = require('express')
 const router = express.Router()
-const Record = require('../models/record.js')
+
+// sequelize model
+const db = require('../models')
+const Record = db.Record
 
 // custom module
 const { getSelectList } = require('../lib/category.js')
@@ -15,6 +18,7 @@ const { getOwnerId, checkNewEdit } = require('../lib/lib.js')
 // routes '/records'
 // ==============================
 
+// Create
 router.get('/new', (req, res) => {
   // 上一筆輸入 ( flash 回傳為陣列，需往內指 )
   const input = req.flash('input')[0]
@@ -37,14 +41,14 @@ router.post('/new', (req, res) => {
   }
 
   // 儲存至 database
-  input.userId = req.user.id
+  input.UserId = req.user.id
 
-  Record.create(input, err => {
-    if (err) return console.error(err)
-    res.redirect('/index')
-  })
+  Record.create(input)
+    .then(record => res.redirect('/index') )
+    .catch(err => res.status(422).json(err) )
 })
 
+// Update
 router.get('/:id/edit', (req, res) => {
   const id = req.params.id
 
@@ -98,6 +102,7 @@ router.put('/:id/edit', (req, res) => {
   })
 })
 
+// Delete
 router.delete('/:id/delete', (req, res) => {
   Record.findOne(getOwnerId(req), (err, record) => {
     if (err) return console.error(err)
