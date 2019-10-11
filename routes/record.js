@@ -12,7 +12,8 @@ const Record = db.Record
 
 // custom module
 const { getSelectList } = require('../lib/category.js')
-const { getOwnerId, checkNewEdit } = require('../lib/lib.js')
+const { checkNewEdit } = require('../lib/checkForm.js')
+const getOwnerId = require('../lib/queryTools.js')
 
 
 // routes '/records'

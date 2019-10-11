@@ -13,7 +13,7 @@ const db = require('../models')
 const User = db.User
 
 // custom module
-const { checkSignUp, checkProfile, checkPassword } = require('../lib/lib.js')
+const { checkSignUp, checkProfile, checkPassword } = require('../lib/checkForm.js')
 const isAuthed = require('../config/auth.js')
 
 // routes '/users'

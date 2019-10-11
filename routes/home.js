@@ -13,7 +13,7 @@ const Record = db.Record
 
 // custom module
 const { getCategoryIcon, getSelectList } = require('../lib/category.js')
-const { getMonthList } = require('../lib/lib.js')
+const getMonthList = require('../lib/monthList.js')
 
 // routes '/'
 // ==============================
