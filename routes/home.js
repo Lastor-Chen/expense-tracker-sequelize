@@ -5,6 +5,7 @@
 
 const express = require('express')
 const router = express.Router()
+const sequelize = require('sequelize')
 
 // sequelize model
 const db = require('../models')
@@ -25,18 +26,16 @@ router.get('/', (req, res) => {
 })
 
 router.get('/index', async (req, res) => {
-  // 被篩選的月份
+  // 處理月份 filter
   const month = +req.query.month
+  const query = { userId: req.user.id }
+  if (month) { query['$and'] = sequelize.where(sequelize.fn('MONTH', sequelize.col('date')), month) }
 
   let records = []
-  try {
-    records = await Record.findAll({
-      where: { userId: req.user.id },
-      order: [['date', 'DESC']]
-    })
-  }
+  try { records = await Record.findAll({ where: query, order: [['date', 'DESC']] }) }
   catch (err) { res.status(422).json(err) }
 
+  // 處理頁面所需資訊，注入 record
   let times = 1
   for (const record of records) {
     record.iconName = getCategoryIcon(record)
