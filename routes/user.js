@@ -19,6 +19,7 @@ const isAuthed = require('../config/auth.js')
 // routes '/users'
 // ==============================
 
+// 登入
 router.get('/signin', (req, res) => {
   const email = req.flash('email')
 
@@ -37,6 +38,7 @@ router.post('/signin', (req, res, next) => {
   })(req, res, next)
 })
 
+// 註冊
 router.get('/signup', (req, res) => {
   res.render('signup', { css: 'sign', js: 'sign'})
 })
@@ -63,6 +65,7 @@ router.post('/signup', async (req, res, next) => {
   })(req, res, next)
 })
 
+// 登出
 router.get('/signout', (req, res) => {
   req.logout()
   req.flash('success', '您已成功登出')
@@ -70,6 +73,7 @@ router.get('/signout', (req, res) => {
   res.redirect('/users/signin')
 })
 
+// user profile
 router.get('/setting', isAuthed, (req, res) => {
   const user = req.user
   res.render('setting', { user })
@@ -84,10 +88,9 @@ router.put('/setting/profile', isAuthed, async (req, res) => {
   const error = await checkProfile(input, operator)
   if (error.length) return res.render('setting', { input, form, error })
 
-  // 更新
-  await User.updateOne({ _id: operator.id }, { ...input })
-
-  res.redirect('/index')
+  User.update({ ...input }, { where: { id: operator.id } })
+    .then(user => res.redirect('/index'))
+    .catch(err => res.status(422).json(err))
 })
 
 router.put('/setting/password', isAuthed, (req, res) => {
@@ -99,11 +102,10 @@ router.put('/setting/password', isAuthed, (req, res) => {
   const error = checkPassword(req.body)
   if (error.length) return res.render('setting', { user, form, error })
 
-  // 加鹽後更新
-  bcrypt.hash(password, 10, async (err, hash) => {
-    await User.updateOne({ _id: user.id }, { password: hash })
-    res.redirect('/index')
-  })
+  const hash = bcrypt.hashSync(password, 10)
+  User.update({ password: hash }, { where: { id: user.id } })
+    .then(user => res.redirect('/index') )
+    .catch(err => res.status(422).json(err) )
 })
 
 
